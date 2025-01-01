@@ -1,19 +1,23 @@
 import SwiftUI
 
 public struct ImageView: View {
+#if !os(macOS)
   var image: UIImage?
 
   public init(image: UIImage? = nil) {
     self.image = image
   }
+#endif
 
   public var body: some View {
     content()
   }
 
-#if !os(tvOS)
+
   @ViewBuilder
   func content() -> some View {
+#if os(iOS)
+
     if let image = image {
       Image(uiImage: image)
         .resizable()
@@ -29,12 +33,9 @@ public struct ImageView: View {
         .padding(5)
         .redacted(reason: .placeholder)
     }
-  }
-#endif
 
-#if os(tvOS)
-  @ViewBuilder
-  func content() -> some View {
+#elseif os(tvOS)
+
     Rectangle()
       .aspectRatio(1, contentMode: .fill)
       .overlay {
@@ -53,6 +54,12 @@ public struct ImageView: View {
         }
       }
       .cornerRadius(5)
-  }
+
+#else
+
+    EmptyView()
+
 #endif
+
+  }
 }
